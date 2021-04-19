@@ -1,3 +1,4 @@
+import 'package:amecc_recruit/view/employer/employer.dart';
 import 'package:amecc_recruit/view/home/home_page.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: HomePage(),
+      home: Employer(),
     );
   }
 }
