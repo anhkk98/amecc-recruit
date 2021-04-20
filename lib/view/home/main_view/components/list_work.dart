@@ -1,3 +1,5 @@
+
+import 'package:amecc_recruit/model/business/search_by_province_type_job.dart';
 import 'package:flutter/material.dart';
 
 class ListWork extends StatefulWidget {
@@ -6,6 +8,14 @@ class ListWork extends StatefulWidget {
 }
 
 class _ListWorkState extends State<ListWork> {
+  Future<List<SearchByProvinceTypeJobModel>> fetchJob;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchJob = getJob();
+  }
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -22,7 +32,15 @@ class _ListWorkState extends State<ListWork> {
             ],
           ),
           SizedBox(height: 15),
-          _buildBody(),
+          FutureBuilder<List<SearchByProvinceTypeJobModel>>(
+            future: fetchJob,
+            builder: (context, snapshot){
+              if(snapshot.hasError) print(snapshot.error);
+              return snapshot.hasData ? Column(
+                children: snapshot.data.map((e) => _buildBody(e)).toList(),
+              ) : CircularProgressIndicator();
+            },
+          ),
           SizedBox(height: 20,),
           Container(
             padding: EdgeInsets.only(top: 15,bottom: 15,left: 25,right: 25),
@@ -37,7 +55,7 @@ class _ListWorkState extends State<ListWork> {
     );
   }
 
-  Widget _buildBody() {
+  Widget _buildBody(SearchByProvinceTypeJobModel job) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
@@ -49,7 +67,7 @@ class _ListWorkState extends State<ListWork> {
         children: [
           Expanded(
             flex: 1,
-            child: Image.asset('assets/images/logo_job.png'),
+            child: job.urlImage != null ? Image.network(job.urlImage): Image.asset('assets/images/logo_job.png'),
           ),
           SizedBox(
             width: 6,
@@ -59,22 +77,30 @@ class _ListWorkState extends State<ListWork> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Nhân viên Truyền thông, Đối ngoại',
-                    style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          job?.title ?? '',
+                          style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+                        ),
+                      ),
+                      job?.isUrgentRecruit ?? true ? Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: Colors.red[400]
+                        ),
+                        padding: EdgeInsets.only(top: 4,bottom: 3,left: 5,right: 5),
+                        child: Text('TUYỂN GẤP',style: TextStyle(fontSize: 9, color: Colors.white),),
+                      ): Container()
+                    ],
                   ),
                   SizedBox(
                     height: 5,
                   ),
                   Wrap(
-                    children: [
-                      _condition('Digital Marketing'),
-                      _condition('Java'),
-                      _condition('Server'),
-                      _condition('DevOps'),
-                      _condition('Enginering'),
-                      _condition('Software Architecture'),
-                    ],
+                    children: job.workSkill.split(', ').map((e) => _condition(e)).toList()
                   ),
                   SizedBox(
                     height: 5,
@@ -85,7 +111,7 @@ class _ListWorkState extends State<ListWork> {
                           children: [
                         TextSpan(text: '700 - 1,000 \$'),
                         TextSpan(text: ' | '),
-                        TextSpan(text: 'Ha Noi'),
+                        TextSpan(text: job.provinceCodeName),
                       ])),
                   SizedBox(
                     height: 8,

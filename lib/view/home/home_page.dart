@@ -1,9 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
-import 'components/carouse.dart';
-import 'components/main_view.dart';
+import 'main_view/main_view.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -163,9 +161,9 @@ class _HomePageState extends State<HomePage> {
             },
             body: checkView ? TabBarView(
               children: [
-                _tab1(),
-                _tab2(),
-                _tab3(),
+                _tabCandidate(),
+                _tabNews(),
+                _tabEmployer(),
               ],
             ): MainView(),
           ),
@@ -174,14 +172,14 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _tab1(){
-    return Text('1');
+  Widget _tabCandidate(){
+    return Text('Candidate');
   }
-  Widget _tab2(){
-    return Text('2');
+  Widget _tabNews(){
+    return Text('News');
   }
-  Widget _tab3(){
-    return Text('3');
+  Widget _tabEmployer(){
+    return Text('Employer');
   }
 
   Widget _header() {
@@ -192,7 +190,11 @@ class _HomePageState extends State<HomePage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Image.asset('assets/images/logo.png'),
+          GestureDetector(onTap: (){
+            setState(() {
+              checkView = false;
+            });
+          },child: Image.asset('assets/images/logo.png')),
           Container(
               alignment: Alignment.center,
               padding: EdgeInsets.only(left: 20, right: 20),
